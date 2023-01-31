@@ -99,13 +99,13 @@ export default class LinkedList<T> {
       return;
     }
 
-    const prevNode = this.findNode(index);
-    if (!prevNode) {
+    const nextNode = this.findNode(index);
+    if (!nextNode) {
       this.addHead(nodeValue);
       return;
     }
-    const nextNode = prevNode.next;
-    if (!nextNode) {
+    const prevNode = nextNode.prev;
+    if (!prevNode) {
       this.addTail(nodeValue);
       return;
     }
