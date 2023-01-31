@@ -64,13 +64,28 @@ export default class LinkedList<T> {
     return currNode;
   }
   private findNodeByNodeValue(nodeValue: T) {
-    let currNode = this.head;
-    while (currNode) {
-      if (currNode.value === nodeValue) {
-        return currNode;
+    let startHead = this.head;
+    let startTail = this.tail;
+
+    let count = 0;
+    while (count <= this.size) {
+      if (startHead) {
+        count++;
+        if (startHead.value === nodeValue) {
+          return startHead;
+        }
+        startHead = startHead.next;
       }
-      currNode = currNode.next;
+
+      if (startTail) {
+        count++;
+        if (startTail.value === nodeValue) {
+          return startTail;
+        }
+        startTail = startTail.prev;
+      }
     }
+    if (count > this.size) return;
   }
   addIndex(index: number, nodeValue: T) {
     if (index < 0 || this.size <= index) {
