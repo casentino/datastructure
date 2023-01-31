@@ -35,7 +35,7 @@ export default class LinkedList<T> {
     if (typeof indexOrNodeValue === "number") {
       return this.findNodeByIndex(indexOrNodeValue);
     }
-    this.findNodeByNodeValue(indexOrNodeValue);
+    return this.findNodeByNodeValue(indexOrNodeValue);
   }
   private findNodeByIndex(index: number) {
     if (index < 0 || this.size <= index) {
@@ -158,18 +158,16 @@ export default class LinkedList<T> {
     this.size--;
   }
   private deleteByNodeValue(nodeValue: T) {
-    let currNode = this.head;
-    while (currNode) {
-      if (currNode.value === nodeValue) {
-        if (currNode.prev) {
-          currNode.prev.next = undefined;
-        }
-        if (currNode.next) {
-          currNode.next.prev = undefined;
-        }
-      } else {
-        currNode = currNode.next;
-      }
+    const node = this.findNodeByNodeValue(nodeValue);
+    if (!node) return;
+    const nextNode = node.next;
+    const prevNode = node.prev;
+
+    if (nextNode) {
+      nextNode.prev = prevNode;
+    }
+    if (prevNode) {
+      prevNode.next = nextNode;
     }
     this.size--;
   }
