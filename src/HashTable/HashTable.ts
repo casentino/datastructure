@@ -1,4 +1,4 @@
-import { LinkedList } from "../LinkedList/Singly";
+import { LinkedList, ListNode } from "../LinkedList/Singly";
 
 type HashNodeType<K, V> = { key: K; value: V };
 
@@ -33,28 +33,27 @@ export default class HashTable<K extends string | number, V> {
     if (!this.hashTables[hashIndex]) {
       return;
     }
-    return this.findHashNode(this.hashTables[hashIndex], key);
-  }
-  rehash() {
-    const tempTable = this.hashTables;
-
-    this.hashTables = new Array(this.capacity * 2);
-    for (let i = 0; i < tempTable.length; i++) {
-      let currNode = tempTable[i].head;
-      while (!currNode) {
-        const { key, value } = currNode!.value;
-        this.put(key, value);
-        currNode = currNode!.next;
-      }
-    }
-  }
-  capacityMonitor() {
-    const loadFactor = this.size / this.capacity;
-    if (loadFactor <= this.defaultLoadFactor) {
+    const findNode = this.findHashNode(this.hashTables[hashIndex], key);
+    if (!findNode) {
       return;
     }
-    this.rehash();
+    return findNode.value;
   }
+  rehash() {
+    this.capacity *= 2;
+    const tempTable = this.hashTables;
+    tempTable.forEach(console.log);
+    this.hashTables = new Array(this.capacity);
+    tempTable.forEach((linkedList) => {
+      let currNode = linkedList.head;
+      while (currNode) {
+        const { key, value } = currNode.value;
+        this.put(key, value);
+        currNode = currNode.next;
+      }
+    });
+  }
+
   put(key: K, value: V) {
     const hashIndex = this.hashFunction(key);
     if (!this.hashTables[hashIndex]) {
@@ -79,7 +78,65 @@ export default class HashTable<K extends string | number, V> {
     this.capacityMonitor();
     return;
   }
-  findHashNode(linkedList: LinkedList<HashNodeType<K, V>>, key: K) {
+
+  remove(key: K) {
+    const hashIndex = this.hashFunction(key);
+    if (!this.hashTables[hashIndex]) {
+      return;
+    }
+    const findNode = this.findHashNode(this.hashTables[hashIndex], key);
+    if (!findNode) {
+      return;
+    }
+
+    const isDelete = this.deleteHashNode(this.hashTables[hashIndex], findNode);
+    if (isDelete) {
+      this.size--;
+    }
+    if (!this.hashTables[hashIndex].head) {
+      delete this.hashTables[hashIndex];
+    }
+    return findNode;
+  }
+  print() {
+    const printStr = this.hashTables.reduce((prev, curr, i) => {
+      let currNode = curr.head;
+      let linkedListNodes = [];
+      while (currNode) {
+        const { key, value } = currNode.value;
+        linkedListNodes.push(`[${key}, ${value}]`);
+        currNode = currNode.next;
+      }
+      return `
+  ${prev === "" ? "--------- HashTable ---------" : prev} 
+    Bucket: ${i}
+      - Nodes: ${linkedListNodes.join(", ")}
+  `;
+    }, "");
+    console.log(printStr.concat("\n--------- End ---------"));
+  }
+  private capacityMonitor() {
+    const loadFactor = this.size / this.capacity;
+    if (loadFactor <= this.defaultLoadFactor) {
+      return;
+    }
+    this.rehash();
+  }
+  private deleteHashNode(linkedList: LinkedList<HashNodeType<K, V>>, node: ListNode<HashNodeType<K, V>>) {
+    let currNode = linkedList.head;
+    if (currNode && currNode.value.key === node.value.key) {
+      linkedList.head = node.next;
+      return;
+    }
+    while (currNode) {
+      if (currNode.next && currNode.next.value.key === node.value.key) {
+        currNode.next = node.next;
+        return true;
+      }
+      currNode = currNode.next;
+    }
+  }
+  private findHashNode(linkedList: LinkedList<HashNodeType<K, V>>, key: K) {
     let currNode = linkedList.head;
     while (currNode) {
       if (currNode.value.key === key) {
@@ -88,19 +145,5 @@ export default class HashTable<K extends string | number, V> {
       currNode = currNode.next;
     }
     return;
-  }
-  remove(key: K) {
-    const hashIndex = this.hashFunction(key);
-    if (!this.hashTables[hashIndex]) {
-      return;
-    }
-    const findNode = this.findHashNode(this.hashTables[hashIndex], key);
-    if (!findNode) return;
-
-    this.hashTables[hashIndex].deleteNode(findNode);
-    if (!this.hashTables[hashIndex].head) {
-      delete this.hashTables[hashIndex];
-    }
-    return findNode;
   }
 }
