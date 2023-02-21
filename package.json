@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon --exec 'ts-node' src/index.ts localhost 8080",
     "start:question": "nodemon --exec 'ts-node' src/LinkedList/questions/00001-RemoveLinkedListElements.ts localhost 8080",
-    "start:tree": "nodemon --exec 'ts-node' src/Tree/traverse.ts localhost 8080"
+    "start:tree": "nodemon --exec 'ts-node' src/Tree/iterative-traverse.ts localhost 8080",
+    "debug:tree": "'ts-node' src/Tree/iterative-traverse.ts localhost 8080"
   },
   "keywords": [],
   "author": "",
