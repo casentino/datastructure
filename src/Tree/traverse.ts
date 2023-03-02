@@ -18,7 +18,7 @@ root.right.right = new TreeNode(7);
 /**
  * PreOrder
  */
-function printPreOrder<T>(node?: TreeNode<T>): T[] {
+export function printPreOrder<T>(node?: TreeNode<T>): T[] {
   if (!node) return [];
 
   const left = printPreOrder(node.left);
@@ -34,7 +34,7 @@ console.log("== End ==\n");
 /**
  *  InOrder
  */
-function printInOrder<T>(node?: TreeNode<T>): T[] {
+export function printInOrder<T>(node?: TreeNode<T>): T[] {
   if (!node) return [];
   const left = printInOrder(node.left);
   const right = printInOrder(node.right);
@@ -47,7 +47,7 @@ console.log("== End ==\n");
  * PostOrder
  */
 
-function printPostOrder<T>(node?: TreeNode<T>): T[] {
+export function printPostOrder<T>(node?: TreeNode<T>): T[] {
   if (!node) return [];
   const left = printPostOrder(node.left);
   const right = printPostOrder(node.right);
