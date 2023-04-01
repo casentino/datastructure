@@ -20,7 +20,7 @@ function validateBST(node: TreeNode<number> | undefined, range?: [number, number
   }
   const [min, max] = range;
   const { value } = node;
-  if (value <= min && value >= max) {
+  if (value <= min || value >= max) {
     return false;
   }
   let isLeft = validateBST(node.left, [min, node.value]);
